@@ -5,7 +5,7 @@ import requests
 # API BASE URL
 # -------------------------
 
-BASE_URL = "http://localhost:8001"
+BASE_URL = "http://localhost:8000"
 
 ALS_ENDPOINT = "/als/recommend/"
 MARKOV_ENDPOINT = "/recommend/markov/"

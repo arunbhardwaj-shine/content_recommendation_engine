@@ -4,6 +4,7 @@ from core.model_registry import initialize_models, start_background_refresh
 from api.markov_routes import router as markov_router
 from api.als_routes import router as als_router
 from api.qdrant_route import router as qdrant_router
+from api.all_routes import router as all_router
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 from core.als_model import ALSRecommender
@@ -35,6 +36,7 @@ app.add_middleware(
 app.include_router(markov_router)
 app.include_router(als_router)
 app.include_router(qdrant_router)
+app.include_router(all_router)
 @app.get("/")
 async def health_check():
     return {"status": "API is running"}

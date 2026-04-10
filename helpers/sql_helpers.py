@@ -83,3 +83,89 @@ LEFT JOIN pdf_files pf
 WHERE p.id = :pdf_id
 LIMIT 1
 """
+
+als_query = """
+            SELECT ptt.user_id, ptt.pdf_id
+            FROM pdf_time_tracks ptt
+            WHERE ptt.user_id = (
+                SELECT id
+                FROM users
+                WHERE email = :email
+                ORDER BY id ASC
+                LIMIT 1
+            )
+            ORDER BY ptt.starttime DESC
+            LIMIT 1
+        """
+
+markov_query = """
+        WITH recent_reads AS (
+            SELECT 
+                ptt.user_id,
+                ptt.pdf_id,
+                p.popup_email_content_language,
+                ptt.starttime
+            FROM pdf_time_tracks ptt
+            JOIN pdfs p ON p.id = ptt.pdf_id
+            WHERE ptt.user_id = (
+                SELECT id
+                FROM users
+                WHERE email = :email
+                ORDER BY id ASC
+                LIMIT 1
+            )
+            ORDER BY ptt.starttime DESC
+            LIMIT 5
+        ),
+
+        majority_language AS (
+            SELECT popup_email_content_language
+            FROM recent_reads
+            GROUP BY popup_email_content_language
+            ORDER BY COUNT(*) DESC
+            LIMIT 1
+        )
+
+        SELECT rr.user_id, rr.pdf_id
+        FROM recent_reads rr
+        JOIN majority_language ml 
+        ON rr.popup_email_content_language = ml.popup_email_content_language
+        ORDER BY rr.starttime DESC
+        LIMIT 1;
+        """
+
+qdrant_query = """
+        WITH recent_reads AS (
+            SELECT 
+                ptt.user_id,
+                ptt.pdf_id,
+                p.popup_email_content_language,
+                ptt.starttime
+            FROM pdf_time_tracks ptt
+            JOIN pdfs p ON p.id = ptt.pdf_id
+            WHERE ptt.user_id = (
+                SELECT id
+                FROM users
+                WHERE email = :email
+                ORDER BY id ASC
+                LIMIT 1
+            )
+            ORDER BY ptt.starttime DESC
+            LIMIT 5
+        ),
+
+        majority_language AS (
+            SELECT popup_email_content_language
+            FROM recent_reads
+            GROUP BY popup_email_content_language
+            ORDER BY COUNT(*) DESC
+            LIMIT 1
+        )
+
+        SELECT rr.user_id, rr.pdf_id
+        FROM recent_reads rr
+        JOIN majority_language ml 
+        ON rr.popup_email_content_language = ml.popup_email_content_language
+        ORDER BY rr.starttime DESC
+        LIMIT 1;
+        """

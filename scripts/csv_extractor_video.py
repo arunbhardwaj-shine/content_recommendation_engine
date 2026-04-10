@@ -6,8 +6,8 @@ engine = get_engine()
 
 df = pd.read_sql(pdf_query, engine)
 df_video = df[
-    (df["file_type"] == "video") &
-    (df["popup_email_content_language"] == 0)
+    (df["file_type"] == "video") #&
+    #(df["popup_email_content_language"] == 0)
 ].reset_index(drop=True)
 ids = [3425,3426,3548,3549,2716,3694]
 df = df[df["pdf_id"].isin(ids)].reset_index(drop=True)

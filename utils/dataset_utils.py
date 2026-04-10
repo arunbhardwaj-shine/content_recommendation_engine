@@ -24,12 +24,12 @@ def extract_text_for_row(row: pd.Series, s3_client: S3Client) -> Optional[str]:
         print(f"Extracting text for: {s3_key}")
         print(len(file_bytes))
         # 🔁 ROUTER
-        if file_type == "pdf":
-            return extract_text_from_pdf(file_bytes)
-        #elif file_type in {"mp4", "video"}:
-            #return extract_text_from_video(file_bytes)
-        elif file_type == "ebook":
-            return extract_text_from_pdf(file_bytes)  # Assuming ebooks are also PDFs
+        #if file_type == "pdf":
+            #return extract_text_from_pdf(file_bytes)
+        if file_type in {"mp4", "video"}:
+            return extract_text_from_video(file_bytes)
+        #elif file_type == "ebook":
+            #return extract_text_from_pdf(file_bytes)  # Assuming ebooks are also PDFs
         else:
             print(f"Unsupported file type: {file_type}")
             return None
